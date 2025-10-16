@@ -1,68 +1,56 @@
 import { Component } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
 export class LoginComponent {
-
+  message: string = '';
+  loading = false;
   
   constructor(
-    private router: Router
+    private router: Router,
+    private authService: AuthService
   ) {}
 
-
-  allUser = [
-    {"userName": "admin"},
-    {"password": "@admin"},
-  ];
-
   ngOnInit(): void {
-    // this.service.getAllUsers().subscribe({
-    //   next: (r) => {
-    //     this.allUser = r;
-    //   },
-    //   error: (err) => {
-    //     alert(err);
-    //   },
-    // });
+    // Check if already logged in
+    if (this.authService.isAuthenticated()) {
+      this.router.navigate(['/dashboard']);
+    }
   }
 
-  message:string = "";
-
   formSubmit(data: NgForm) {
-    console.log(data.value.name);
-    console.log(data.value.password);
+    if (data.invalid) return;
 
-    console.log(this.allUser.at(0)?.userName);
-    console.log(this.allUser.at(1)?.password);
-    console.log();
-    
-    
-    
-    // console.log(this.allUser);
+    this.loading = true;
+    const loginRequest = {
+      username: data.value.name,
+      password: data.value.password
+    };
 
-
-    if (this.allUser.at(0)?.userName === data.value.name && this.allUser.at(1)?.password === data.value.password) {
-
-      sessionStorage.removeItem('admin');
-      sessionStorage.setItem('admin', data.value);
-
-      this.message = "Login Successfull! "
-      this.showMessage();
-
-      this.router.navigate(['/dashboard']);
-
-    } else {
-      this.message = 'User Name Or Password Is InCorrect..'
-      alert( 'User Name Or Password Is InCorrect..')
-    }
+    this.authService.login(loginRequest).subscribe({
+      next: (response) => {
+        this.loading = false;
+        this.message = 'Login Successful!';
+        this.showMessage();
+        setTimeout(() => {
+          this.router.navigate(['/dashboard']);
+        }, 1000);
+      },
+      error: (err) => {
+        this.loading = false;
+        this.message = err?.error?.message || 'Invalid username or password';
+        alert(this.message);
+      }
+    });
   }
 
   

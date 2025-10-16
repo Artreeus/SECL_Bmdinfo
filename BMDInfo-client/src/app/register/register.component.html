@@ -1,0 +1,120 @@
+<div class="login-page">
+  <div class="container-fluid">
+    <div class="row min-vh-100">
+      <!-- Left Side - Register Form -->
+      <div class="col-lg-6 d-flex align-items-center justify-content-center p-4">
+        <div class="login-form-container">
+          <div class="text-center mb-5">
+            <div class="logo-container mb-4">
+              <div class="logo-circle">
+                <i class="fas fa-user-plus"></i>
+              </div>
+            </div>
+            <h1 class="login-title">Create Account</h1>
+            <p class="login-subtitle">Sign up to get started</p>
+          </div>
+
+          <form class="login-form" (ngSubmit)="formSubmit(f)" #f="ngForm">
+            <div class="form-group mb-4">
+              <label class="form-label">Username</label>
+              <div class="input-wrapper">
+                <i class="fas fa-user input-icon"></i>
+                <input
+                  ngModel
+                  name="username"
+                  type="text"
+                  class="form-control modern-input"
+                  placeholder="Enter your username"
+                  required
+                  minlength="3"
+                  #username="ngModel"
+                />
+              </div>
+              <div *ngIf="!username.valid && username.touched" class="error-message">
+                <i class="fas fa-exclamation-circle me-1"></i>
+                Username must be at least 3 characters
+              </div>
+            </div>
+
+            <div class="form-group mb-4">
+              <label class="form-label">Email</label>
+              <div class="input-wrapper">
+                <i class="fas fa-envelope input-icon"></i>
+                <input
+                  ngModel
+                  name="email"
+                  type="email"
+                  class="form-control modern-input"
+                  placeholder="Enter your email"
+                  required
+                  email
+                  #email="ngModel"
+                />
+              </div>
+              <div *ngIf="!email.valid && email.touched" class="error-message">
+                <i class="fas fa-exclamation-circle me-1"></i>
+                Valid email is required
+              </div>
+            </div>
+
+            <div class="form-group mb-4">
+              <label class="form-label">Password</label>
+              <div class="input-wrapper">
+                <i class="fas fa-lock input-icon"></i>
+                <input
+                  ngModel
+                  name="password"
+                  type="password"
+                  class="form-control modern-input"
+                  placeholder="Enter your password"
+                  required
+                  minlength="6"
+                  #password="ngModel"
+                />
+              </div>
+              <div *ngIf="!password.valid && password.touched" class="error-message">
+                <i class="fas fa-exclamation-circle me-1"></i>
+                Password must be at least 6 characters
+              </div>
+            </div>
+
+            <button 
+              [disabled]="!f.valid || loading"
+              type="submit"
+              class="btn btn-login w-100 mb-4"
+            >
+              <span *ngIf="!loading">Sign Up</span>
+              <span *ngIf="loading">
+                <i class="fas fa-spinner fa-spin me-2"></i>
+                Creating Account...
+              </span>
+            </button>
+          </form>
+
+          <div class="text-center">
+            <p class="signup-text">
+              Already have an account? 
+              <a routerLink="/login" class="signup-link">Sign in here</a>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Side - Welcome Section -->
+      <div class="col-lg-6 d-none d-lg-flex align-items-center justify-content-center welcome-section">
+        <div class="welcome-content text-center">
+          <div class="welcome-illustration mb-4">
+            <div class="illustration-circle">
+              <i class="fas fa-chart-line"></i>
+            </div>
+          </div>
+          <h2 class="welcome-title">Join BMD Info</h2>
+          <p class="welcome-description">
+            Create your account and get access to powerful business management tools, 
+            analytics, and insights.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

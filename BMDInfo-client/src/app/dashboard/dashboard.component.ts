@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { DataServiceService } from '../data-service.service';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -19,20 +20,19 @@ export class DashboardComponent {
 
   lastFetchDataAt: any;
   isLoaderVisible = false;
+  currentUser: any;
 
   constructor(
     private router: Router,
     private dataService: DataServiceService,
+    private authService: AuthService
   ) {}
 
-  storedValue!: any;
   ngOnInit(): void {
-    // Check if the user is logged in as admin
-    if(!sessionStorage.getItem('admin')) {
-      this.router.navigate(['/login']);
-      return;
-    }
-    this.storedValue = sessionStorage.getItem('admin');
+    // Get current user from AuthService
+    this.authService.currentUser.subscribe(user => {
+      this.currentUser = user;
+    });
 
     this.dataService.getLastFetchedDataAt().subscribe({
       next: (data) => {
@@ -51,9 +51,7 @@ export class DashboardComponent {
   }
 
   logOut(){
-    sessionStorage.removeItem('admin');
-    this.router.navigate(['/login']);
-
+    this.authService.logout();
   }
 
   fetchData() {
